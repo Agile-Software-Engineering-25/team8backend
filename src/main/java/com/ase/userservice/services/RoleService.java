@@ -5,6 +5,7 @@ import com.ase.userservice.controllers.dto.RoleUpdateRequest;
 import com.ase.userservice.components.exceptions.ConflictException;
 import com.ase.userservice.components.exceptions.NotFoundException;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.WebApplicationException;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.RoleResource;
 import org.keycloak.representations.idm.RoleRepresentation;
@@ -25,12 +26,16 @@ public class RoleService {
     rep.setDescription(req.description());
     rep.setComposite(false);
 
-    Response response = realm.roles().create(rep);
-    int status = response.getStatus();
-    response.close();
-    if (status == 201) return;
-    if (status == 409) throw new ConflictException("Rolle existiert bereits: " + req.name());
-    throw new RuntimeException("Unerwarteter Status bei Erstellung: " + status);
+    try {
+      realm.roles().create(rep); // returns void in KC 26+
+    } catch (WebApplicationException ex) {
+      Response r = ex.getResponse();
+      if (r != null && r.getStatus() == 409) {
+        throw new ConflictException("Rolle existiert bereits: " + req.name());
+      }
+      String msg = (r != null) ? ("Keycloak-Fehler: " + r.getStatus()) : ex.getMessage();
+      throw new RuntimeException(msg, ex);
+    }
   }
 
   public void update(String currentName, RoleUpdateRequest req) {
