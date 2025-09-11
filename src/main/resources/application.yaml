@@ -14,6 +14,26 @@ spring:
     driverClassName: org.h2.Driver
     username: sa
     password: password
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://<KEYCLOAK_HOST>/realms/<REALM_NAME>
+
+keycloak:
+  admin:
+    server-url: https://<KEYCLOAK_HOST>
+    realm: <REALM_NAME>
+    client-id: <CONFIDENTIAL_CLIENT_MIT_SERVICE_ACCOUNT>
+    client-secret: <CLIENT_SECRET>
+    connect-timeout-ms: 10000
+    read-timeout-ms: 20000
+
+logging:
+  level:
+    root: INFO
+    com.ase.ASE-UserService: DEBUG
+
 server:
   error:
     include-message: always
