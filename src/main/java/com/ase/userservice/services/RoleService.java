@@ -57,7 +57,7 @@ public class RoleService {
   }
 
   public List<RoleRepresentation> getComposites(String name) {
-    return getRoleResourceOrThrow(name).getRoleComposites();
+    return (List<RoleRepresentation>) getRoleResourceOrThrow(name).getRoleComposites();
   }
 
   private RoleResource getRoleResourceOrThrow(String name) {
