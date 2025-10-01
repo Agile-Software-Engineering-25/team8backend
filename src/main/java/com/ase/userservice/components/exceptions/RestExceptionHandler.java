@@ -21,6 +21,11 @@ public class RestExceptionHandler {
     return build(HttpStatus.CONFLICT, ex, req);
   }
 
+  @ExceptionHandler(BadRequestException.class)
+  public ResponseEntity<ApiError> handleBadRequest(BadRequestException ex, HttpServletRequest req) {
+    return build(HttpStatus.BAD_REQUEST, ex, req);
+  }
+
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ApiError> handleOther(Exception ex, HttpServletRequest req) {
     return build(HttpStatus.INTERNAL_SERVER_ERROR, ex, req);

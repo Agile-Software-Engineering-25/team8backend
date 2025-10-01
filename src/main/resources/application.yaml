@@ -29,6 +29,17 @@ keycloak:
     connect-timeout-ms: 10000
     read-timeout-ms: 20000
 
+roles:
+  standard-names: ["common", "manager", "admin"]
+  fallback: "common"
+  metadata:
+    manager:
+      required-fields: ["department"]
+  admin:
+    required-fields: []
+  support:
+    required-fields: ["queue"]
+
 logging:
   level:
     root: INFO

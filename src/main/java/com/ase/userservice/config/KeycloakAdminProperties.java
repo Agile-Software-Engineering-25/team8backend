@@ -13,7 +13,6 @@ public class KeycloakAdminProperties {
   private Integer connectTimeoutMs = 10000;
   private Integer readTimeoutMs = 20000;
 
-
   public String getServerUrl() { return serverUrl; }
   public void setServerUrl(String serverUrl) { this.serverUrl = serverUrl; }
   public String getRealm() { return realm; }

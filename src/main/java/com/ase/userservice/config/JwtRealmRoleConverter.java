@@ -5,10 +5,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-
 import java.util.*;
 import java.util.stream.Collectors;
-
 
 public class JwtRealmRoleConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
   @Override

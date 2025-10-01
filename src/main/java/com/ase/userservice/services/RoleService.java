@@ -4,37 +4,34 @@ import com.ase.userservice.controllers.dto.RoleRequest;
 import com.ase.userservice.controllers.dto.RoleUpdateRequest;
 import com.ase.userservice.components.exceptions.ConflictException;
 import com.ase.userservice.components.exceptions.NotFoundException;
-import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.WebApplicationException;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.RoleResource;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RoleService {
 
   private final RealmResource realm;
 
-  public RoleService(RealmResource realm) {
-    this.realm = realm;
-  }
+  public RoleService(RealmResource realm) { this.realm = realm; }
 
   public void create(RoleRequest req) {
     RoleRepresentation rep = new RoleRepresentation();
     rep.setName(req.name());
     rep.setDescription(req.description());
     rep.setComposite(false);
-
     try {
-      realm.roles().create(rep); // returns void in KC 26+
+      realm.roles().create(rep); // KC 26+: void
     } catch (WebApplicationException ex) {
-      Response r = ex.getResponse();
+      var r = ex.getResponse();
       if (r != null && r.getStatus() == 409) {
         throw new ConflictException("Rolle existiert bereits: " + req.name());
       }
-      String msg = (r != null) ? ("Keycloak-Fehler: " + r.getStatus()) : ex.getMessage();
-      throw new RuntimeException(msg, ex);
+      throw ex;
     }
   }
 
@@ -49,6 +46,18 @@ public class RoleService {
   public void delete(String name) {
     RoleResource roleResource = getRoleResourceOrThrow(name);
     roleResource.remove();
+  }
+
+  public List<RoleRepresentation> listAll() {
+    return realm.roles().list();
+  }
+
+  public RoleRepresentation get(String name) {
+    return getRoleResourceOrThrow(name).toRepresentation();
+  }
+
+  public List<RoleRepresentation> getComposites(String name) {
+    return getRoleResourceOrThrow(name).getRoleComposites();
   }
 
   private RoleResource getRoleResourceOrThrow(String name) {
