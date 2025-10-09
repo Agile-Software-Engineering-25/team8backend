@@ -18,14 +18,16 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://<KEYCLOAK_HOST>/realms/<REALM_NAME>
+          issuer-uri: https://keycloak.sau-protal.de/realms/sau
 
 keycloak:
   admin:
-    server-url: https://<KEYCLOAK_HOST>
-    realm: <REALM_NAME>
-    client-id: <CONFIDENTIAL_CLIENT_MIT_SERVICE_ACCOUNT>
-    client-secret: <CLIENT_SECRET>
+    server-url: https://keycloak.sau-protal.de
+    realm: sau
+    client-id: admin-cli
+    username: ${KC_USERNAME}
+    password: ${KC_PASSWORD}
+    client-secret: ""
     connect-timeout-ms: 10000
     read-timeout-ms: 20000
 

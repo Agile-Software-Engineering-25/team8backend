@@ -4,14 +4,10 @@ import com.ase.userservice.controllers.dto.RoleSummary;
 import com.ase.userservice.controllers.dto.UserSummary;
 import com.ase.userservice.services.RoleQueryService;
 import com.ase.userservice.services.UserService;
-import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/users", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -39,15 +35,21 @@ public class UserController {
   }
 
   @GetMapping("/{userId}/roles")
-  public List<RoleSummary> directRoles(@PathVariable String userId) {
-    List<RoleRepresentation> roles = roleQueryService.getUserDirectRoles(userId);
-    return roles.stream().map(UserController::toSummary).toList();
+  public java.util.List<RoleSummary> directRoles(@PathVariable String userId) {
+    var roles = roleQueryService.getUserDirectRealmRoles(userId);
+    return roles.stream()
+        .map(r -> new RoleSummary(
+            r.getName(),
+            r.getDescription(),
+            r.isComposite(),
+            java.util.List.of("direct")
+        ))
+        .toList();
   }
 
   @GetMapping("/{userId}/roles/effective")
-  public List<RoleSummary> effectiveRoles(@PathVariable String userId) {
-    Set<RoleRepresentation> roles = roleQueryService.getUserEffectiveRoles(userId);
-    return roles.stream().map(UserController::toSummary).collect(Collectors.toList());
+  public java.util.List<RoleSummary> effectiveRoles(@PathVariable String userId) {
+    return roleQueryService.getUserEffectiveRoleSummaries(userId);
   }
 
   private static UserSummary toSummary(UserRepresentation u) {
@@ -61,7 +63,12 @@ public class UserController {
     );
   }
 
-  private static RoleSummary toSummary(RoleRepresentation r) {
-    return new RoleSummary(r.getName(), r.getDescription(), Boolean.TRUE.equals(r.isComposite()));
+  private static RoleSummary toSummary(org.keycloak.representations.idm.RoleRepresentation r) {
+    return new RoleSummary(
+        r.getName(),
+        r.getDescription(),
+        r.isComposite(),
+        java.util.List.of("direct")
+    );
   }
 }
