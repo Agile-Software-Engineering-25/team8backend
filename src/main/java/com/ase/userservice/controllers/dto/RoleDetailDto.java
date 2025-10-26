@@ -1,4 +1,4 @@
-package com.example.keycloak.backend.dto;
+package com.ase.userservice.controllers.dto;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package com.example.keycloak.backend.service;
+package com.ase.userservice.services;
 
-import com.example.keycloak.backend.dto.*;
+import com.ase.userservice.controllers.dto.*;
 import jakarta.ws.rs.core.Response;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;

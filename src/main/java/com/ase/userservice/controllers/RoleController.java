@@ -1,7 +1,7 @@
-package com.example.keycloak.backend.controller;
+package com.ase.userservice.controllers;
 
-import com.example.keycloak.backend.dto.*;
-import com.example.keycloak.backend.service.KeycloakRoleService;
+import com.ase.userservice.controllers.dto.*;
+import com.ase.userservice.services.KeycloakRoleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

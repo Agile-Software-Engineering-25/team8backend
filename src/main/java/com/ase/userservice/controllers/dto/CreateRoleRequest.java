@@ -1,4 +1,4 @@
-package com.example.keycloak.backend.dto;
+package com.ase.userservice.controllers.dto;
 
 // Für die Erstellung einer neuen Rolle
 public record CreateRoleRequest(String name) {}
