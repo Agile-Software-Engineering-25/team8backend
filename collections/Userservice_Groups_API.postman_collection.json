@@ -1,341 +1,10 @@
 {
   "info": {
-    "name": "Userservice API – Groups (Keycloak)",
-    "_postman_id": "181e5ad1-0a26-4896-87a6-60f47da68c11",
-    "description": "Manage Keycloak Groups, group-role assignments and group memberships. Uses password grant against admin-cli by default.",
+    "name": "Userservice API – Groups & Roles",
+    "_postman_id": "00000000-0000-0000-0000-000000000001",
+    "description": "Keycloak Gruppen- & Berechtigungsverwaltung (team-8, client_credentials).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
-  "item": [
-    {
-      "name": "Groups",
-      "item": [
-        {
-          "name": "Create Group",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/groups",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "groups"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"team-rocket\",\n  \"attributes\": {\n    \"department\": \"it\"\n  }\n}"
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "List Groups",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/groups",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "groups"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Get Group",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/groups/{{groupId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "groups",
-                "{{groupId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update Group",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/groups/{{groupId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "groups",
-                "{{groupId}}"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"team-rocket\",\n  \"attributes\": {\n    \"department\": \"engineering\"\n  }\n}"
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Delete Group",
-          "request": {
-            "method": "DELETE",
-            "url": {
-              "raw": "{{baseUrl}}/api/groups/{{groupId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "groups",
-                "{{groupId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "List Group Roles (realm)",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/groups/{{groupId}}/roles",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "groups",
-                "{{groupId}}",
-                "roles"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Assign Roles to Group",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/groups/{{groupId}}/roles",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "groups",
-                "{{groupId}}",
-                "roles"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"roleNames\": [\n    \"manager\",\n    \"common\"\n  ]\n}"
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Remove Roles from Group",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/groups/{{groupId}}/roles",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "groups",
-                "{{groupId}}",
-                "roles"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"roleNames\": [\n    \"common\"\n  ]\n}"
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Memberships",
-      "item": [
-        {
-          "name": "Add Users to Group (bulk)",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/groups/{{groupId}}/users",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "groups",
-                "{{groupId}}",
-                "users"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"userIds\": [\n    \"USER1\",\n    \"USER2\"\n  ]\n}"
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Remove Users from Group (bulk)",
-          "request": {
-            "method": "DELETE",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/groups/{{groupId}}/users",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "groups",
-                "{{groupId}}",
-                "users"
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"userIds\": [\n    \"USER1\",\n    \"USER2\"\n  ]\n}"
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Add Single User to Group",
-          "request": {
-            "method": "POST",
-            "url": {
-              "raw": "{{baseUrl}}/api/users/{{userId}}/groups/{{groupId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "users",
-                "{{userId}}",
-                "groups",
-                "{{groupId}}"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Remove Single User from Group",
-          "request": {
-            "method": "DELETE",
-            "url": {
-              "raw": "{{baseUrl}}/api/users/{{userId}}/groups/{{groupId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "users",
-                "{{userId}}",
-                "groups",
-                "{{groupId}}"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Users (lookup)",
-      "item": [
-        {
-          "name": "Search Users",
-          "request": {
-            "method": "GET",
-            "url": {
-              "raw": "{{baseUrl}}/api/users?q={{q}}&first={{first}}&max={{max}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "users"
-              ],
-              "query": [
-                {
-                  "key": "q",
-                  "value": "{{q}}"
-                },
-                {
-                  "key": "first",
-                  "value": "{{first}}"
-                },
-                {
-                  "key": "max",
-                  "value": "{{max}}"
-                }
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    }
-  ],
   "auth": {
     "type": "bearer",
     "bearer": [
@@ -354,36 +23,412 @@
         "exec": [
           "const nowSec = Math.floor(Date.now()/1000);",
           "const exp = parseInt(pm.environment.get('token_expiry') || '0', 10);",
-          "if (pm.environment.get('access_token') && (exp - nowSec) > 60) { return; }",
-          "const kcUrl = pm.environment.get('kcUrl');",
-          "const realm = pm.environment.get('realm');",
-          "const tokenUrl = `${kcUrl}/realms/${realm}/protocol/openid-connect/token`;",
-          "const clientId = pm.environment.get('clientId') || 'admin-cli';",
-          "const username = pm.environment.get('username');",
-          "const password = pm.environment.get('password');",
-          "let body = [",
-          "  {key:'grant_type', value:'password'},",
-          "  {key:'client_id', value: clientId},",
-          "  {key:'username', value: username},",
-          "  {key:'password', value: password}",
-          "];",
-          "const clientSecret = pm.environment.get('clientSecret');",
-          "if (clientSecret && clientSecret.trim() !== '') {",
-          "  body.push({key:'client_secret', value: clientSecret});",
+          "if (pm.environment.get('access_token') && (exp - nowSec) > 60) {",
+          "  console.log('Existing token still valid');",
+          "  return;",
           "}",
+          "const kcUrl   = pm.environment.get('kcUrl')   || 'https://keycloak.sau-portal.de';",
+          "const realm   = pm.environment.get('realm')   || 'sau';",
+          "const clientId     = pm.environment.get('clientId')     || 'team-8';",
+          "const clientSecret = pm.environment.get('clientSecret');",
+          "const tokenUrl = `${kcUrl}/realms/${realm}/protocol/openid-connect/token`;",
+          "let body = [",
+          "  {key:'grant_type',    value:'client_credentials'},",
+          "  {key:'client_id',     value: clientId},",
+          "  {key:'client_secret', value: clientSecret}",
+          "];",
           "pm.sendRequest({",
-          "  url: tokenUrl, method: 'POST',",
+          "  url: tokenUrl,",
+          "  method: 'POST',",
           "  header: {'Content-Type':'application/x-www-form-urlencoded'},",
-          "  body: { mode:'urlencoded', urlencoded: body }",
-          "}, function(err, res){",
-          "  if (err) { console.log('Token request failed', err); return; }",
+          "  body: {mode:'urlencoded', urlencoded: body}",
+          "}, function(err, res) {",
+          "  if (err) {",
+          "    console.log('Token request failed', err);",
+          "    return;",
+          "  }",
           "  const data = res.json();",
           "  pm.environment.set('access_token', data.access_token);",
           "  const ttl = parseInt(data.expires_in || '300', 10);",
           "  pm.environment.set('token_expiry', String(nowSec + ttl));",
+          "  console.log('Token fetched, status', res.code);",
           "});"
         ]
       }
+    }
+  ],
+  "item": [
+    {
+      "name": "Roles",
+      "item": [
+        {
+          "name": "List Roles",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/roles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "roles"]
+            }
+          }
+        },
+        {
+          "name": "Get Role by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/roles/{{roleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "roles", "{{roleId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/roles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "roles"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"MyRole\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/roles/{{roleId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "roles", "{{roleId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"MyRoleRenamed\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Add Permission to Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/roles/{{roleId}}/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "roles", "{{roleId}}", "permissions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"permissionId\": \"{{permissionId}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Remove Permission from Role",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/roles/{{roleId}}/permissions/{{permissionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "roles", "{{roleId}}", "permissions", "{{permissionId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Standard Roles",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/standard-roles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "standard-roles"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Permissions",
+      "item": [
+        {
+          "name": "List All Permissions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "permissions"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Groups",
+      "item": [
+        {
+          "name": "List Groups",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/groups",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups"]
+            }
+          }
+        },
+        {
+          "name": "Get Group by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/groups/{{groupId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups", "{{groupId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Group",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/groups",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"team-marketing\",\n  \"attributes\": {\n    \"department\": \"marketing\"\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Group",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/groups/{{groupId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups", "{{groupId}}"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"team-marketing-intl\",\n  \"attributes\": {\n    \"department\": \"marketing\",\n    \"region\": \"international\"\n  }\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Group",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/groups/{{groupId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups", "{{groupId}}"]
+            }
+          }
+        },
+        {
+          "name": "List Group Permissions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/groups/{{groupId}}/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups", "{{groupId}}", "permissions"]
+            }
+          }
+        },
+        {
+          "name": "Add Permissions to Group",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/groups/{{groupId}}/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups", "{{groupId}}", "permissions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"permissionIds\": [\"{{permissionId}}\"]\n}"
+            }
+          }
+        },
+        {
+          "name": "Remove Permissions from Group",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/groups/{{groupId}}/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups", "{{groupId}}", "permissions"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"permissionIds\": [\"{{permissionId}}\"]\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Group Memberships",
+      "item": [
+        {
+          "name": "List Users in Group",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/groups/{{groupId}}/users?first=0&max=50",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups", "{{groupId}}", "users"],
+              "query": [
+                { "key": "first", "value": "0" },
+                { "key": "max", "value": "50" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Add Users (bulk) to Group",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/groups/{{groupId}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups", "{{groupId}}", "users"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userIds\": [\"{{userId}}\"]\n}"
+            }
+          }
+        },
+        {
+          "name": "Remove Users (bulk) from Group",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/groups/{{groupId}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups", "{{groupId}}", "users"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userIds\": [\"{{userId}}\"]\n}"
+            }
+          }
+        },
+        {
+          "name": "Add Single User to Group",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId}}/groups/{{groupId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{userId}}", "groups", "{{groupId}}"]
+            }
+          }
+        },
+        {
+          "name": "Remove Single User from Group",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId}}/groups/{{groupId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{userId}}", "groups", "{{groupId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Search Users",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users?q={{q}}&first=0&max=50",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users"],
+              "query": [
+                { "key": "q", "value": "{{q}}" },
+                { "key": "first", "value": "0" },
+                { "key": "max", "value": "50" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get User Groups",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId}}/groups",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{userId}}", "groups"]
+            }
+          }
+        },
+        {
+          "name": "Get User Effective Permissions",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId}}/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "{{userId}}", "permissions"]
+            }
+          }
+        }
+      ]
     }
   ]
 }

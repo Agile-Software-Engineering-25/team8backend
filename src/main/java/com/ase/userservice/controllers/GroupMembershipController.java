@@ -1,37 +1,61 @@
 package com.ase.userservice.controllers;
 
 import com.ase.userservice.controllers.dto.BulkUserIdsRequest;
-import com.ase.userservice.services.GroupMembershipService;
-import jakarta.validation.Valid;
+import com.ase.userservice.controllers.dto.UserDto;
+import com.ase.userservice.services.KeycloakGroupService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
 public class GroupMembershipController {
 
-  private final GroupMembershipService svc;
-  public GroupMembershipController(GroupMembershipService svc) { this.svc = svc; }
+  private final KeycloakGroupService groupService;
 
-  @PostMapping("/users/{userId}/groups/{groupId}")
-  public ResponseEntity<Void> addSingle(@PathVariable String userId, @PathVariable String groupId) {
-    svc.addUser(userId, groupId);
-    return ResponseEntity.ok().build();
+  public GroupMembershipController(KeycloakGroupService groupService) {
+    this.groupService = groupService;
   }
 
-  @DeleteMapping("/users/{userId}/groups/{groupId}")
-  public ResponseEntity<Void> removeSingle(@PathVariable String userId, @PathVariable String groupId) {
-    svc.removeUser(userId, groupId);
-    return ResponseEntity.noContent().build();
+  /* Users einer Gruppe anzeigen */
+  @GetMapping("/groups/{groupId}/users")
+  public ResponseEntity<List<UserDto>> getGroupMembers(
+      @PathVariable String groupId,
+      @RequestParam(defaultValue = "0") int first,
+      @RequestParam(defaultValue = "100") int max) {
+
+    return ResponseEntity.ok(groupService.getGroupMembers(groupId, first, max));
   }
 
+  /* Bulk: Users einer Gruppe hinzufügen / entfernen */
   @PostMapping("/groups/{groupId}/users")
-  public ResponseEntity<Integer> addBulk(@PathVariable String groupId, @Valid @RequestBody BulkUserIdsRequest body) {
-    return ResponseEntity.ok(svc.addUsersBulk(groupId, body));
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void addUsersToGroup(@PathVariable String groupId,
+                              @RequestBody BulkUserIdsRequest body) {
+    groupService.addUsersToGroup(groupId, body);
   }
 
   @DeleteMapping("/groups/{groupId}/users")
-  public ResponseEntity<Integer> removeBulk(@PathVariable String groupId, @Valid @RequestBody BulkUserIdsRequest body) {
-    return ResponseEntity.ok(svc.removeUsersBulk(groupId, body));
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void removeUsersFromGroup(@PathVariable String groupId,
+                                   @RequestBody BulkUserIdsRequest body) {
+    groupService.removeUsersFromGroup(groupId, body);
+  }
+
+  /* Single User ↔ Group */
+  @PostMapping("/users/{userId}/groups/{groupId}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void addSingleUser(@PathVariable String userId,
+                            @PathVariable String groupId) {
+    groupService.addSingleUserToGroup(groupId, userId);
+  }
+
+  @DeleteMapping("/users/{userId}/groups/{groupId}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void removeSingleUser(@PathVariable String userId,
+                               @PathVariable String groupId) {
+    groupService.removeSingleUserFromGroup(groupId, userId);
   }
 }

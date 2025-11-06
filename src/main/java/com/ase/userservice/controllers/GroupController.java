@@ -1,14 +1,11 @@
 package com.ase.userservice.controllers;
 
 import com.ase.userservice.controllers.dto.*;
-import com.ase.userservice.services.GroupRoleService;
-import com.ase.userservice.services.GroupService;
-import jakarta.validation.Valid;
-import org.keycloak.representations.idm.GroupRepresentation;
+import com.ase.userservice.services.KeycloakGroupService;
 import org.keycloak.representations.idm.RoleRepresentation;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -16,52 +13,61 @@ import java.util.List;
 @RequestMapping("/api/groups")
 public class GroupController {
 
-  private final GroupService groupService;
-  private final GroupRoleService groupRoleService;
+  private final KeycloakGroupService groupService;
 
-  public GroupController(GroupService groupService, GroupRoleService groupRoleService) {
-    this.groupService = groupService; this.groupRoleService = groupRoleService;
+  public GroupController(KeycloakGroupService groupService) {
+    this.groupService = groupService;
+  }
+
+  /* --------- CRUD Groups --------- */
+
+  @GetMapping
+  public ResponseEntity<List<GroupDto>> getAllGroups() {
+    return ResponseEntity.ok(groupService.findAllGroups());
+  }
+
+  @GetMapping("/{groupId}")
+  public ResponseEntity<GroupDetailDto> getGroupById(@PathVariable String groupId) {
+    return ResponseEntity.ok(groupService.findGroupById(groupId));
   }
 
   @PostMapping
-  public ResponseEntity<Void> create(@Valid @RequestBody GroupRequest req, UriComponentsBuilder uri) {
-    groupService.create(req);
-    return ResponseEntity.created(uri.path("/api/groups").build().toUri()).build();
+  @ResponseStatus(HttpStatus.CREATED)
+  public void createGroup(@RequestBody CreateGroupRequest request) {
+    groupService.createGroup(request);
   }
 
-  @GetMapping
-  public List<GroupRepresentation> list() { return groupService.list(); }
-
-  @GetMapping("/{groupId}")
-  public GroupRepresentation get(@PathVariable String groupId) { return groupService.get(groupId); }
-
   @PutMapping("/{groupId}")
-  public ResponseEntity<Void> update(@PathVariable String groupId, @RequestBody GroupUpdateRequest req) {
-    groupService.update(groupId, req);
-    return ResponseEntity.ok().build();
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void updateGroup(@PathVariable String groupId,
+                          @RequestBody UpdateGroupRequest request) {
+    groupService.updateGroup(groupId, request);
   }
 
   @DeleteMapping("/{groupId}")
-  public ResponseEntity<Void> delete(@PathVariable String groupId) {
-    groupService.delete(groupId);
-    return ResponseEntity.noContent().build();
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void deleteGroup(@PathVariable String groupId) {
+    groupService.deleteGroup(groupId);
   }
 
-  // Rollen (nur zuordnen/entfernen, keine Rollen-CRUD)
-  @GetMapping("/{groupId}/roles")
-  public List<RoleRepresentation> listRoles(@PathVariable String groupId) {
-    return groupRoleService.listRealmRoles(groupId);
+  /* --------- Permissions einer Group --------- */
+
+  @GetMapping("/{groupId}/permissions")
+  public ResponseEntity<List<RoleRepresentation>> getGroupPermissions(@PathVariable String groupId) {
+    return ResponseEntity.ok(groupService.findGroupPermissions(groupId));
   }
 
-  @PostMapping("/{groupId}/roles")
-  public ResponseEntity<Void> addRoles(@PathVariable String groupId, @Valid @RequestBody RoleNamesRequest req) {
-    groupRoleService.addRealmRoles(groupId, req);
-    return ResponseEntity.ok().build();
+  @PostMapping("/{groupId}/permissions")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void addPermissions(@PathVariable String groupId,
+                             @RequestBody GroupPermissionsRequest request) {
+    groupService.addPermissionsToGroup(groupId, request);
   }
 
-  @DeleteMapping("/{groupId}/roles")
-  public ResponseEntity<Void> removeRoles(@PathVariable String groupId, @Valid @RequestBody RoleNamesRequest req) {
-    groupRoleService.removeRealmRoles(groupId, req);
-    return ResponseEntity.noContent().build();
+  @DeleteMapping("/{groupId}/permissions")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void removePermissions(@PathVariable String groupId,
+                                @RequestBody GroupPermissionsRequest request) {
+    groupService.removePermissionsFromGroup(groupId, request);
   }
 }
