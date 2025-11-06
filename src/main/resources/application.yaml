@@ -18,16 +18,14 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://keycloak.sau-protal.de/realms/sau
+          issuer-uri: https://keycloak.sau-portal.de/realms/sau
 
 keycloak:
   admin:
-    server-url: https://keycloak.sau-protal.de
+    server-url: https://keycloak.sau-portal.de
     realm: sau
-    client-id: admin-cli
-    username: ${KC_USERNAME}
-    password: ${KC_PASSWORD}
-    client-secret: ""
+    client-id: team-8
+    client-secret: Kc5yZxOZTgIEeCkVEMG0vKL0a83Qq5Kq
     connect-timeout-ms: 10000
     read-timeout-ms: 20000
 

@@ -27,7 +27,7 @@ public class KeycloakAdminConfig {
 
     @Value("${keycloak.grant-type}")
     private String grantType;
-    
+
     @Value("${cors.allowed-origins}")
     private String allowedOrigins;
 
@@ -35,7 +35,6 @@ public class KeycloakAdminConfig {
 	public RealmResource realmResource(Keycloak keycloak) {
    		return keycloak.realm(realm);
 	}
-
 
     @Bean
     public Keycloak keycloak() {
@@ -47,7 +46,7 @@ public class KeycloakAdminConfig {
                 .grantType(grantType)
                 .build();
     }
-    
+
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
