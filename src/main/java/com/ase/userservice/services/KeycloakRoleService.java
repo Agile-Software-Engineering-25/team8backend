@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Locale;
 
 @Service
 public class KeycloakRoleService {
@@ -50,7 +51,7 @@ public class KeycloakRoleService {
                 .collect(Collectors.toList());
         return new RoleDetailDto(role.getId(), role.getName(), assignedPermissionIds);
     }
-    
+
     public List<PermissionDto> findAllPermissions() {
         // "Verfügbare Berechtigungen" sind hier als alle anderen Realm-Rollen definiert.
         // In einer echten Anwendung könnten dies auch Client-Rollen sein.
@@ -59,7 +60,21 @@ public class KeycloakRoleService {
                 .collect(Collectors.toList());
     }
 
-    public void createRole(CreateRoleRequest request) {
+    public List<RoleDto> searchRolesByName(String name) {
+      String query = name == null ? "" : name.toLowerCase(Locale.ROOT);
+      return findAllRoles().stream()
+          .filter(r -> r.name().toLowerCase(Locale.ROOT).contains(query))
+          .toList();
+    }
+
+    public List<PermissionDto> searchPermissionsByName(String name) {
+      String query = name == null ? "" : name.toLowerCase(Locale.ROOT);
+      return findAllPermissions().stream()
+          .filter(p -> p.name().toLowerCase(Locale.ROOT).contains(query))
+          .toList();
+    }
+
+  public void createRole(CreateRoleRequest request) {
         RoleRepresentation newRole = new RoleRepresentation();
         newRole.setName(request.name());
         newRole.setComposite(true); // Wichtig, um andere Rollen hinzufügen zu können
@@ -81,7 +96,7 @@ public class KeycloakRoleService {
         RoleRepresentation permissionRole = getRealm().rolesById().getRole(permissionId);
         getRealm().rolesById().deleteComposites(roleId, Collections.singletonList(permissionRole));
     }
-    
+
     public List<String> getStandardRoles() {
         return STANDARD_ROLES;
     }

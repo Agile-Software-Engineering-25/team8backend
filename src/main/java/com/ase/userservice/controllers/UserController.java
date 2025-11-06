@@ -6,6 +6,7 @@ import com.ase.userservice.services.KeycloakGroupService;
 import org.keycloak.representations.idm.GroupRepresentation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -33,6 +34,15 @@ public class UserController {
   @GetMapping("/{userId}")
   public ResponseEntity<UserDto> getUser(@PathVariable String userId) {
     return ResponseEntity.ok(groupService.getUserById(userId));
+  }
+
+  @GetMapping("/search")
+  public ResponseEntity<List<UserDto>> searchUsersByName(
+      @RequestParam String name,
+      @RequestParam(defaultValue = "0") int first,
+      @RequestParam(defaultValue = "50") int max) {
+
+    return ResponseEntity.ok(groupService.searchUsers(name, first, max));
   }
 
   /* Gruppen eines Users */

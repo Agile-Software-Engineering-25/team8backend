@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,6 +56,14 @@ public class KeycloakGroupService {
         g.getAttributes(),
         permissionIds
     );
+  }
+
+  public List<GroupDto> searchGroupsByName(String name) {
+    String query = name == null ? "" : name.toLowerCase(Locale.ROOT);
+    return findAllGroups().stream()
+        .filter(g -> g.name() != null &&
+            g.name().toLowerCase(Locale.ROOT).contains(query))
+        .toList();
   }
 
   public String createGroup(CreateGroupRequest request) {

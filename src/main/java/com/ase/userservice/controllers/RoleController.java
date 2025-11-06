@@ -5,6 +5,7 @@ import com.ase.userservice.services.KeycloakRoleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,12 @@ public class RoleController {
     public ResponseEntity<RoleDetailDto> getRoleById(@PathVariable String roleId) {
         return ResponseEntity.ok(roleService.findRoleById(roleId));
     }
-    
+
+    @GetMapping("/roles/search")
+    public ResponseEntity<List<RoleDto>> searchRoles(@RequestParam String name) {
+      return ResponseEntity.ok(roleService.searchRolesByName(name));
+    }
+
     @PostMapping("/roles")
     @ResponseStatus(HttpStatus.CREATED)
     public void createRole(@RequestBody CreateRoleRequest request) {
@@ -53,7 +59,7 @@ public class RoleController {
     public void removePermission(@PathVariable String roleId, @PathVariable String permissionId) {
         roleService.removePermissionFromRole(roleId, permissionId);
     }
-    
+
     @GetMapping("/standard-roles")
     public ResponseEntity<List<String>> getStandardRoles() {
         return ResponseEntity.ok(roleService.getStandardRoles());

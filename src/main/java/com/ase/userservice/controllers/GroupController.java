@@ -6,6 +6,7 @@ import org.keycloak.representations.idm.RoleRepresentation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -29,6 +30,11 @@ public class GroupController {
   @GetMapping("/{groupId}")
   public ResponseEntity<GroupDetailDto> getGroupById(@PathVariable String groupId) {
     return ResponseEntity.ok(groupService.findGroupById(groupId));
+  }
+
+  @GetMapping("/search")
+  public ResponseEntity<List<GroupDto>> searchGroups(@RequestParam String name) {
+    return ResponseEntity.ok(groupService.searchGroupsByName(name));
   }
 
   @PostMapping

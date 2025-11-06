@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Userservice API – Groups & Roles",
-    "_postman_id": "00000000-0000-0000-0000-000000000001",
+    "_postman_id": "f1d83fb1-5f6d-4cbb-9f2b-2c4f3f7f5f6d",
     "description": "Keycloak Gruppen- & Berechtigungsverwaltung (team-8, client_credentials).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -158,6 +158,20 @@
               "path": ["api", "standard-roles"]
             }
           }
+        },
+        {
+          "name": "Search Roles by Name",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/roles/search?name={{roleName}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "roles", "search"],
+              "query": [
+                { "key": "name", "value": "{{roleName}}" }
+              ]
+            }
+          }
         }
       ]
     },
@@ -172,6 +186,20 @@
               "raw": "{{baseUrl}}/api/permissions",
               "host": ["{{baseUrl}}"],
               "path": ["api", "permissions"]
+            }
+          }
+        },
+        {
+          "name": "Search Permissions by Name",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/permissions/search?name={{permName}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "permissions", "search"],
+              "query": [
+                { "key": "name", "value": "{{permName}}" }
+              ]
             }
           }
         }
@@ -295,6 +323,20 @@
               "raw": "{\n  \"permissionIds\": [\"{{permissionId}}\"]\n}"
             }
           }
+        },
+        {
+          "name": "Search Groups by Name",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/groups/search?name={{groupName}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "groups", "search"],
+              "query": [
+                { "key": "name", "value": "{{groupName}}" }
+              ]
+            }
+          }
         }
       ]
     },
@@ -380,7 +422,7 @@
       "name": "Users",
       "item": [
         {
-          "name": "Search Users",
+          "name": "Search Users (q)",
           "request": {
             "method": "GET",
             "url": {
@@ -389,6 +431,22 @@
               "path": ["api", "users"],
               "query": [
                 { "key": "q", "value": "{{q}}" },
+                { "key": "first", "value": "0" },
+                { "key": "max", "value": "50" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Users by Name",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/users/search?name={{userName}}&first=0&max=50",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "users", "search"],
+              "query": [
+                { "key": "name", "value": "{{userName}}" },
                 { "key": "first", "value": "0" },
                 { "key": "max", "value": "50" }
               ]
