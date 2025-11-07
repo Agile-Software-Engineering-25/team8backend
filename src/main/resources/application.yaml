@@ -14,6 +14,37 @@ spring:
     driverClassName: org.h2.Driver
     username: sa
     password: password
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://keycloak.sau-portal.de/realms/sau
+
+keycloak:
+  admin:
+    server-url: https://keycloak.sau-portal.de
+    realm: sau
+    client-id: team-8
+    client-secret: Kc5yZxOZTgIEeCkVEMG0vKL0a83Qq5Kq
+    connect-timeout-ms: 10000
+    read-timeout-ms: 20000
+
+roles:
+  standard-names: ["common", "manager", "admin"]
+  fallback: "common"
+  metadata:
+    manager:
+      required-fields: ["department"]
+  admin:
+    required-fields: []
+  support:
+    required-fields: ["queue"]
+
+logging:
+  level:
+    root: INFO
+    com.ase.ASE-UserService: DEBUG
+
 server:
   error:
     include-message: always
