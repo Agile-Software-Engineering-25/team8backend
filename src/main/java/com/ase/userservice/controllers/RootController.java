@@ -9,7 +9,7 @@ public class RootController {
 
 	@GetMapping("/")
 	public ResponseEntity<String> root() {
-		return ResponseEntity.ok("API Root: /api/v1/");
+		return ResponseEntity.ok("API Root: /api/ase-08/v1/");
 	}
 
 }

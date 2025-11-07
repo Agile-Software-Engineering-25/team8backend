@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/ase-08")
 public class RoleController {
 
     private final KeycloakRoleService roleService;

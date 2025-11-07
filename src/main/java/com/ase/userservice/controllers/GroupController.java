@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/groups")
+@RequestMapping("/api/ase-08/groups")
 public class GroupController {
 
   private final KeycloakGroupService groupService;
