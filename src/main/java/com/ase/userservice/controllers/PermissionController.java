@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/permissions")
+@RequestMapping("/api/ase-08/permissions")
 public class PermissionController {
 
     private final KeycloakRoleService roleService;

@@ -18,28 +18,34 @@ public class SecurityConfig {
     http.csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
             // GROUPS lesen
-            .requestMatchers(HttpMethod.GET, "/api/groups/**").hasAnyAuthority(
+            .requestMatchers(HttpMethod.GET, "/api/ase-08/groups/**").hasAnyAuthority(
                 "ROLE_realm-admin",
                 "ROLE_realm-management_view-realm",
                 "ROLE_realm-management_manage-realm"
             )
             // GROUPS anlegen/ändern/löschen + Rollen an Gruppe
-            .requestMatchers("/api/groups/**").hasAnyAuthority(
+            .requestMatchers("/api/ase-08/groups/**").hasAnyAuthority(
                 "ROLE_realm-admin",
                 "ROLE_realm-management_manage-realm"
             )
             // USERS lesen (für Suche etc.)
-            .requestMatchers(HttpMethod.GET, "/api/users/**").hasAnyAuthority(
+            .requestMatchers(HttpMethod.GET, "/api/ase-08/users/**").hasAnyAuthority(
                 "ROLE_realm-admin",
                 "ROLE_realm-management_view-users",
                 "ROLE_realm-management_query-users",
                 "ROLE_realm-management_manage-users"
             )
             // Gruppenmitgliedschaften (zuordnen/entziehen)
-            .requestMatchers("/api/users/**").hasAnyAuthority(
+            .requestMatchers("/api/ase-08/users/**").hasAnyAuthority(
                 "ROLE_realm-admin",
                 "ROLE_realm-management_manage-users"
             )
+            .requestMatchers(
+                "/v3/api-docs/**",
+                "/ase-08/swagger-ui.html",
+                "/ase-08/swagger-ui/**",
+                "/api/ase-08/actuator/health/**"
+            ).permitAll()
             .anyRequest().authenticated())
         .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConv)));
 

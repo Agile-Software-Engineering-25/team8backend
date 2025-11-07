@@ -487,6 +487,71 @@
           }
         }
       ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/ase-08/actuator/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ase-08", "actuator", "health"]
+            }
+          }
+        },
+        {
+          "name": "Liveness",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/ase-08/actuator/health/liveness",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ase-08", "actuator", "health", "liveness"]
+            }
+          }
+        },
+        {
+          "name": "Readiness",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/ase-08/actuator/health/readiness",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ase-08", "actuator", "health", "readiness"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Swagger",
+      "item": [
+        {
+          "name": "OpenAPI JSON (ase-08)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/v3/api-docs/ase-08",
+              "host": ["{{baseUrl}}"],
+              "path": ["v3", "api-docs", "ase-08"]
+            }
+          }
+        },
+        {
+          "name": "Swagger UI (ase-08)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/ase-08/swagger-ui.html",
+              "host": ["{{baseUrl}}"],
+              "path": ["ase-08", "swagger-ui.html"]
+            }
+          }
+        }
+      ]
     }
   ]
 }
