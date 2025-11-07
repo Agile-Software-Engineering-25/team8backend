@@ -19,19 +19,6 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      - name: Ensure Checkstyle jar
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ -f checkstyle-11.0.0-all.jar ]; then
-            echo "JAR=checkstyle-11.0.0-all.jar" >> "$GITHUB_ENV"
-          elif [ -f checkstyle.jar ]; then
-            echo "JAR=checkstyle.jar" >> "$GITHUB_ENV"
-          else
-            curl -sSL -o checkstyle-11.0.0-all.jar https://github.com/checkstyle/checkstyle/releases/download/checkstyle-11.0.0/checkstyle-11.0.0-all.jar
-            echo "JAR=checkstyle-11.0.0-all.jar" >> "$GITHUB_ENV"
-          fi
-
       - name: Run Checkstyle
         shell: bash
         run: |
