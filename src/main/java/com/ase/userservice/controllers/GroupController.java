@@ -38,14 +38,21 @@ public class GroupController {
   }
 
   @GetMapping("/search")
-  public ResponseEntity<List<GroupDto>> searchGroups(@RequestParam String name) {
-    return ResponseEntity.ok(groupService.searchGroupsByName(name));
+  public ResponseEntity<GroupDetailDto> searchGroups(@RequestParam String name) {
+    return ResponseEntity.ok(groupService.findGroupByName(name));
   }
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public void createGroup(@RequestBody CreateGroupRequest request) {
     groupService.createGroup(request);
+  }
+
+  @PostMapping("/groups/{parentGroupId}/children")
+  @ResponseStatus(HttpStatus.CREATED)
+  public GroupDto createChildGroup(@PathVariable String parentGroupId,
+                                   @RequestBody CreateGroupRequest request) {
+    return groupService.createChildGroup(parentGroupId, request);
   }
 
   @PutMapping("/{groupId}")

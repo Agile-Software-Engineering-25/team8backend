@@ -384,6 +384,24 @@
           }
         },
         {
+          "name": "Create Child Group",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ase-08/groups/{{parentGroupId}}/children",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ase-08", "groups", "{{parentGroupId}}", "children"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"BIN-T25\",\n  \"attributes\": {\n    \"semester\": \"WS25\",\n    \"studiengang\": \"BIN\"\n  }\n}"
+            }
+          }
+        },
+        {
           "name": "Update Group",
           "request": {
             "method": "PUT",

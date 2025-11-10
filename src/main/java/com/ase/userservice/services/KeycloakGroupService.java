@@ -10,6 +10,7 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import jakarta.ws.rs.core.Response;
 import java.util.*;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -37,9 +38,10 @@ public class KeycloakGroupService {
   /* ===================== Groups ===================== */
 
   public List<GroupDto> findAllGroups() {
-    return getRealm().groups().groups().stream()
-        .filter(g -> !STANDARD_GROUP_NAMES.contains(g.getName()))
+    return getAllGroupsFlat().stream()
+        .filter(g -> !isStandardRootGroup(g))   // Standardgruppen ausblenden
         .map(this::toGroupDto)
+        .sorted(Comparator.comparing(GroupDto::name))
         .collect(Collectors.toList());
   }
 
@@ -51,33 +53,25 @@ public class KeycloakGroupService {
   }
 
   public GroupDetailDto findGroupById(String groupId) {
-    GroupResource gr = getRealm().groups().group(groupId);
-    GroupRepresentation g = gr.toRepresentation();
-
-    List<String> permissionIds = gr.roles().realmLevel().listAll().stream()
-        .map(RoleRepresentation::getId)
-        .toList();
-
-    return new GroupDetailDto(
-        g.getId(),
-        g.getName(),
-        g.getAttributes(),
-        permissionIds
-    );
+    GroupRepresentation self = realm.groups()
+        .group(groupId)
+        .toRepresentation();
+    return buildGroupDetail(self);
   }
 
-  public List<GroupDto> searchGroupsByName(String name) {
-    String query = name == null ? "" : name.toLowerCase(Locale.ROOT);
-    return findAllGroups().stream()
-        .filter(g -> g.name() != null &&
-            g.name().toLowerCase(Locale.ROOT).contains(query))
-        .toList();
+  public GroupDetailDto findGroupByName(String name) {
+    GroupRepresentation self = getAllGroupsFlat().stream()
+        .filter(g -> name.equals(g.getName()))
+        .findFirst()
+        .orElseThrow(() -> new IllegalArgumentException("Group not found: " + name));
+    return buildGroupDetail(self);
   }
+
 
   public String createGroup(CreateGroupRequest request) {
     GroupRepresentation g = new GroupRepresentation();
     g.setName(request.name());
-    if (request.attributes() != null && !request.attributes().isEmpty()) {
+    if (request.attributes() != null) {
       Map<String, List<String>> attrs = request.attributes().entrySet().stream()
           .collect(Collectors.toMap(
               Map.Entry::getKey,
@@ -88,6 +82,32 @@ public class KeycloakGroupService {
     getRealm().groups().add(g); // KC 26: void
     // ID nicht direkt nötig – das Frontend kann anschließend /groups abfragen
     return g.getName();
+  }
+
+  public GroupDto createChildGroup(String parentGroupId, CreateGroupRequest request) {
+    GroupRepresentation rep = new GroupRepresentation();
+    rep.setName(request.name());
+    if (request.attributes() != null) {
+      Map<String, List<String>> attrs = request.attributes().entrySet().stream()
+          .collect(Collectors.toMap(
+              Map.Entry::getKey,
+              e -> List.of(e.getValue())
+          ));
+      rep.setAttributes(attrs);
+    }
+
+    Response response = realm.groups()
+        .group(parentGroupId)
+        .subGroup(rep);   // Child unter Parent anlegen
+
+    String location = response.getHeaderString("Location");
+    String childId = location.substring(location.lastIndexOf('/') + 1);
+
+    GroupRepresentation created = realm.groups()
+        .group(childId)
+        .toRepresentation();
+
+    return toGroupDto(created);
   }
 
   public void updateGroup(String groupId, UpdateGroupRequest request) {
@@ -208,11 +228,89 @@ public class KeycloakGroupService {
     );
   }
 
+  // alle Gruppen (inkl. Child-Gruppen) flach sammeln
+  private List<GroupRepresentation> getAllGroupsFlat() {
+    List<GroupRepresentation> result = new ArrayList<>();
+    Deque<GroupRepresentation> stack = new ArrayDeque<>(realm.groups().groups());
+    while (!stack.isEmpty()) {
+      GroupRepresentation g = stack.pop();
+      result.add(g);
+      if (g.getSubGroups() != null) {
+        stack.addAll(g.getSubGroups());
+      }
+    }
+    return result;
+  }
+
+  private boolean isStandardRootGroup(GroupRepresentation g) {
+    String path = g.getPath(); // z.B. /Student
+    int depth = path == null ? 0 : path.split("/").length; // ["", "Student"] => 2
+    return depth == 2 && STANDARD_GROUP_NAMES.contains(g.getName());
+  }
+
+  private String extractParentName(GroupRepresentation g) {
+    String path = g.getPath(); // z.B. /Student/BIN-T25/Gruppe3
+    if (path == null) {
+      return null;
+    }
+    String[] segments = path.split("/");
+    if (segments.length <= 2) { // nur Root-Gruppe
+      return null;
+    }
+    return segments[segments.length - 2];
+  }
+
   private GroupDto toGroupDto(GroupRepresentation g) {
-    long memberCount = getRealm().groups()
-        .group(g.getId())
-        .members()
-        .size();
-    return new GroupDto(g.getId(), g.getName(), memberCount);
+    long memberCount = realm.groups().group(g.getId())
+        .members().size();
+    String parentName = extractParentName(g);
+    return new GroupDto(g.getId(), g.getName(), memberCount, parentName);
+  }
+
+  private GroupDetailDto buildGroupDetail(GroupRepresentation self) {
+    List<GroupRepresentation> all = getAllGroupsFlat();
+
+    // direkte Permissions dieser Gruppe
+    List<String> permissionIds = realm.groups()
+        .group(self.getId())
+        .roles().realmLevel().listAll().stream()
+        .map(RoleRepresentation::getId)
+        .collect(Collectors.toList());
+
+    String parentName = extractParentName(self);
+
+    // Ancestors anhand des Pfades bestimmen
+    List<GroupRefDto> ancestors = new ArrayList<>();
+    String path = self.getPath(); // /Student/BIN-T25/Gruppe3
+    if (path != null) {
+      String[] segments = path.split("/");
+      String currentPath = "";
+      for (int i = 1; i < segments.length - 1; i++) {
+        currentPath += "/" + segments[i];
+        String p = currentPath;
+        all.stream()
+            .filter(g -> p.equals(g.getPath()))
+            .findFirst()
+            .ifPresent(g -> ancestors.add(new GroupRefDto(g.getId(), g.getName())));
+      }
+    }
+
+    // direkte Children
+    List<GroupRefDto> children = new ArrayList<>();
+    if (self.getSubGroups() != null) {
+      for (GroupRepresentation sg : self.getSubGroups()) {
+        children.add(new GroupRefDto(sg.getId(), sg.getName()));
+      }
+    }
+
+    return new GroupDetailDto(
+        self.getId(),
+        self.getName(),
+        self.getAttributes(),
+        permissionIds,
+        parentName,
+        ancestors,
+        children
+    );
   }
 }

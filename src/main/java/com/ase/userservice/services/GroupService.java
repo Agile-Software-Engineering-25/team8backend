@@ -4,11 +4,15 @@ import com.ase.userservice.components.exceptions.NotFoundException;
 import com.ase.userservice.controllers.dto.GroupRequest;
 import com.ase.userservice.controllers.dto.GroupUpdateRequest;
 import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.Response;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.GroupResource;
 import org.keycloak.representations.idm.GroupRepresentation;
+import org.keycloak.representations.idm.RoleRepresentation;
 import org.springframework.stereotype.Service;
 
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.List;
 import java.util.Map;
 
