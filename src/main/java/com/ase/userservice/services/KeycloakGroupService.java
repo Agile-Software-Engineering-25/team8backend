@@ -17,6 +17,13 @@ import java.util.stream.Collectors;
 @Service
 public class KeycloakGroupService {
 
+  private static final Set<String> STANDARD_GROUP_NAMES = Set.of(
+      "Lecturer",
+      "SAU Admin",
+      "Student",
+      "University administrative staff"
+  );
+
   private final RealmResource realm;
 
   public KeycloakGroupService(RealmResource realm) {
@@ -31,11 +38,15 @@ public class KeycloakGroupService {
 
   public List<GroupDto> findAllGroups() {
     return getRealm().groups().groups().stream()
-        .map(g -> {
-          long memberCount = getRealm().groups().group(g.getId())
-              .members(0, Integer.MAX_VALUE).size();
-          return new GroupDto(g.getId(), g.getName(), memberCount);
-        })
+        .filter(g -> !STANDARD_GROUP_NAMES.contains(g.getName()))
+        .map(this::toGroupDto)
+        .collect(Collectors.toList());
+  }
+
+  public List<GroupDto> findStandardGroups() {
+    return getRealm().groups().groups().stream()
+        .filter(g -> STANDARD_GROUP_NAMES.contains(g.getName()))
+        .map(this::toGroupDto)
         .collect(Collectors.toList());
   }
 
@@ -195,5 +206,13 @@ public class KeycloakGroupService {
         u.getEmail(),
         Boolean.TRUE.equals(u.isEnabled())
     );
+  }
+
+  private GroupDto toGroupDto(GroupRepresentation g) {
+    long memberCount = getRealm().groups()
+        .group(g.getId())
+        .members()
+        .size();
+    return new GroupDto(g.getId(), g.getName(), memberCount);
   }
 }

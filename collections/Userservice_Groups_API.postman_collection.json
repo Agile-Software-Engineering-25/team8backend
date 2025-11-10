@@ -328,6 +328,17 @@
           }
         },
         {
+          "name": "List Standard Groups",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/ase-08/groups/standard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ase-08", "groups", "standard"]
+            }
+          }
+        },
+        {
           "name": "Get Group by ID",
           "request": {
             "method": "GET",

@@ -27,6 +27,11 @@ public class GroupController {
     return ResponseEntity.ok(groupService.findAllGroups());
   }
 
+  @GetMapping("/standard")
+  public List<GroupDto> listStandardGroups() {
+    return groupService.findStandardGroups();
+  }
+
   @GetMapping("/{groupId}")
   public ResponseEntity<GroupDetailDto> getGroupById(@PathVariable String groupId) {
     return ResponseEntity.ok(groupService.findGroupById(groupId));
