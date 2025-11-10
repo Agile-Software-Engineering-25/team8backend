@@ -17,17 +17,14 @@ import java.util.stream.Collectors;
 @Service
 public class KeycloakGroupService {
 
-  private final Keycloak keycloak;
-  private final String realm;
+  private final RealmResource realm;
 
-  public KeycloakGroupService(Keycloak keycloak,
-                              @Value("${keycloak.realm}") String realm) {
-    this.keycloak = keycloak;
+  public KeycloakGroupService(RealmResource realm) {
     this.realm = realm;
   }
 
   public RealmResource getRealm() {
-    return keycloak.realm(realm);
+    return realm;
   }
 
   /* ===================== Groups ===================== */

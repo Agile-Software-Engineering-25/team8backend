@@ -12,7 +12,13 @@ import java.util.List;
 public class UserService {
   private final RealmResource realm;
 
-  public UserService(RealmResource realm) { this.realm = realm; }
+  public UserService(RealmResource realm) {
+    this.realm = realm;
+  }
+
+  public RealmResource getRealm() {
+    return realm;
+  }
 
   public List<UserRepresentation> search(String query, Integer first, Integer max) {
     int f = first == null ? 0 : first;

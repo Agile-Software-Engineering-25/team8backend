@@ -1,8 +1,8 @@
 {
   "info": {
-    "name": "Userservice API – Groups & Roles",
-    "_postman_id": "f1d83fb1-5f6d-4cbb-9f2b-2c4f3f7f5f6d",
-    "description": "Keycloak Gruppen- & Berechtigungsverwaltung (team-8, client_credentials).",
+    "name": "Userservice API - Groups & Roles (ase-08)",
+    "_postman_id": "ee98bc22-1983-4cde-aa12-8f48ed2497dc",
+    "description": "Keycloak Gruppen- & Berechtigungsverwaltung (team-8, client_credentials). Alle Endpunkte unter /api/ase-08/**.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -66,9 +66,15 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/roles",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "roles"]
+              "raw": "{{baseUrl}}/api/ase-08/roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "roles"
+              ]
             }
           }
         },
@@ -77,9 +83,16 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/roles/{{roleId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "roles", "{{roleId}}"]
+              "raw": "{{baseUrl}}/api/ase-08/roles/{{roleId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "roles",
+                "{{roleId}}"
+              ]
             }
           }
         },
@@ -88,12 +101,21 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/roles",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "roles"]
+              "raw": "{{baseUrl}}/api/ase-08/roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "roles"
+              ]
             },
             "body": {
               "mode": "raw",
@@ -106,12 +128,22 @@
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/roles/{{roleId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "roles", "{{roleId}}"]
+              "raw": "{{baseUrl}}/api/ase-08/roles/{{roleId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "roles",
+                "{{roleId}}"
+              ]
             },
             "body": {
               "mode": "raw",
@@ -124,12 +156,23 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/roles/{{roleId}}/permissions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "roles", "{{roleId}}", "permissions"]
+              "raw": "{{baseUrl}}/api/ase-08/roles/{{roleId}}/permissions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "roles",
+                "{{roleId}}",
+                "permissions"
+              ]
             },
             "body": {
               "mode": "raw",
@@ -142,9 +185,18 @@
           "request": {
             "method": "DELETE",
             "url": {
-              "raw": "{{baseUrl}}/api/roles/{{roleId}}/permissions/{{permissionId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "roles", "{{roleId}}", "permissions", "{{permissionId}}"]
+              "raw": "{{baseUrl}}/api/ase-08/roles/{{roleId}}/permissions/{{permissionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "roles",
+                "{{roleId}}",
+                "permissions",
+                "{{permissionId}}"
+              ]
             }
           }
         },
@@ -153,9 +205,15 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/standard-roles",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "standard-roles"]
+              "raw": "{{baseUrl}}/api/ase-08/standard-roles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "standard-roles"
+              ]
             }
           }
         },
@@ -164,11 +222,21 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/roles/search?name={{roleName}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "roles", "search"],
+              "raw": "{{baseUrl}}/api/ase-08/roles/search",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "roles",
+                "search"
+              ],
               "query": [
-                { "key": "name", "value": "{{roleName}}" }
+                {
+                  "key": "name",
+                  "value": "{{roleName}}"
+                }
               ]
             }
           }
@@ -183,9 +251,33 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/permissions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "permissions"]
+              "raw": "{{baseUrl}}/api/ase-08/permissions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "permissions"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Permission by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/ase-08/permissions/{{permissionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "permissions",
+                "{{permissionId}}"
+              ]
             }
           }
         },
@@ -194,11 +286,21 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/permissions/search?name={{permName}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "permissions", "search"],
+              "raw": "{{baseUrl}}/api/ase-08/permissions/search",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "permissions",
+                "search"
+              ],
               "query": [
-                { "key": "name", "value": "{{permName}}" }
+                {
+                  "key": "name",
+                  "value": "{{permName}}"
+                }
               ]
             }
           }
@@ -213,9 +315,15 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/groups",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "groups"]
+              "raw": "{{baseUrl}}/api/ase-08/groups",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "groups"
+              ]
             }
           }
         },
@@ -224,9 +332,16 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/groups/{{groupId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "groups", "{{groupId}}"]
+              "raw": "{{baseUrl}}/api/ase-08/groups/{{groupId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "groups",
+                "{{groupId}}"
+              ]
             }
           }
         },
@@ -235,12 +350,21 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/groups",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "groups"]
+              "raw": "{{baseUrl}}/api/ase-08/groups",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "groups"
+              ]
             },
             "body": {
               "mode": "raw",
@@ -253,12 +377,22 @@
           "request": {
             "method": "PUT",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/groups/{{groupId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "groups", "{{groupId}}"]
+              "raw": "{{baseUrl}}/api/ase-08/groups/{{groupId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "groups",
+                "{{groupId}}"
+              ]
             },
             "body": {
               "mode": "raw",
@@ -271,9 +405,16 @@
           "request": {
             "method": "DELETE",
             "url": {
-              "raw": "{{baseUrl}}/api/groups/{{groupId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "groups", "{{groupId}}"]
+              "raw": "{{baseUrl}}/api/ase-08/groups/{{groupId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "groups",
+                "{{groupId}}"
+              ]
             }
           }
         },
@@ -282,9 +423,17 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/groups/{{groupId}}/permissions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "groups", "{{groupId}}", "permissions"]
+              "raw": "{{baseUrl}}/api/ase-08/groups/{{groupId}}/permissions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "groups",
+                "{{groupId}}",
+                "permissions"
+              ]
             }
           }
         },
@@ -293,12 +442,23 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/groups/{{groupId}}/permissions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "groups", "{{groupId}}", "permissions"]
+              "raw": "{{baseUrl}}/api/ase-08/groups/{{groupId}}/permissions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "groups",
+                "{{groupId}}",
+                "permissions"
+              ]
             },
             "body": {
               "mode": "raw",
@@ -311,12 +471,23 @@
           "request": {
             "method": "DELETE",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/groups/{{groupId}}/permissions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "groups", "{{groupId}}", "permissions"]
+              "raw": "{{baseUrl}}/api/ase-08/groups/{{groupId}}/permissions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "groups",
+                "{{groupId}}",
+                "permissions"
+              ]
             },
             "body": {
               "mode": "raw",
@@ -329,11 +500,21 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/groups/search?name={{groupName}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "groups", "search"],
+              "raw": "{{baseUrl}}/api/ase-08/groups/search",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "groups",
+                "search"
+              ],
               "query": [
-                { "key": "name", "value": "{{groupName}}" }
+                {
+                  "key": "name",
+                  "value": "{{groupName}}"
+                }
               ]
             }
           }
@@ -348,12 +529,26 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/groups/{{groupId}}/users?first=0&max=50",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "groups", "{{groupId}}", "users"],
+              "raw": "{{baseUrl}}/api/ase-08/groups/{{groupId}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "groups",
+                "{{groupId}}",
+                "users"
+              ],
               "query": [
-                { "key": "first", "value": "0" },
-                { "key": "max", "value": "50" }
+                {
+                  "key": "first",
+                  "value": "0"
+                },
+                {
+                  "key": "max",
+                  "value": "50"
+                }
               ]
             }
           }
@@ -363,12 +558,23 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/groups/{{groupId}}/users",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "groups", "{{groupId}}", "users"]
+              "raw": "{{baseUrl}}/api/ase-08/groups/{{groupId}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "groups",
+                "{{groupId}}",
+                "users"
+              ]
             },
             "body": {
               "mode": "raw",
@@ -381,12 +587,23 @@
           "request": {
             "method": "DELETE",
             "header": [
-              { "key": "Content-Type", "value": "application/json" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/groups/{{groupId}}/users",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "groups", "{{groupId}}", "users"]
+              "raw": "{{baseUrl}}/api/ase-08/groups/{{groupId}}/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "groups",
+                "{{groupId}}",
+                "users"
+              ]
             },
             "body": {
               "mode": "raw",
@@ -399,9 +616,18 @@
           "request": {
             "method": "POST",
             "url": {
-              "raw": "{{baseUrl}}/api/users/{{userId}}/groups/{{groupId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "users", "{{userId}}", "groups", "{{groupId}}"]
+              "raw": "{{baseUrl}}/api/ase-08/users/{{userId}}/groups/{{groupId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "users",
+                "{{userId}}",
+                "groups",
+                "{{groupId}}"
+              ]
             }
           }
         },
@@ -410,9 +636,18 @@
           "request": {
             "method": "DELETE",
             "url": {
-              "raw": "{{baseUrl}}/api/users/{{userId}}/groups/{{groupId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "users", "{{userId}}", "groups", "{{groupId}}"]
+              "raw": "{{baseUrl}}/api/ase-08/users/{{userId}}/groups/{{groupId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "users",
+                "{{userId}}",
+                "groups",
+                "{{groupId}}"
+              ]
             }
           }
         }
@@ -426,13 +661,28 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/users?q={{q}}&first=0&max=50",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "users"],
+              "raw": "{{baseUrl}}/api/ase-08/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "users"
+              ],
               "query": [
-                { "key": "q", "value": "{{q}}" },
-                { "key": "first", "value": "0" },
-                { "key": "max", "value": "50" }
+                {
+                  "key": "q",
+                  "value": "{{q}}"
+                },
+                {
+                  "key": "first",
+                  "value": "0"
+                },
+                {
+                  "key": "max",
+                  "value": "50"
+                }
               ]
             }
           }
@@ -442,13 +692,29 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/users/search?name={{userName}}&first=0&max=50",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "users", "search"],
+              "raw": "{{baseUrl}}/api/ase-08/users/search",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "users",
+                "search"
+              ],
               "query": [
-                { "key": "name", "value": "{{userName}}" },
-                { "key": "first", "value": "0" },
-                { "key": "max", "value": "50" }
+                {
+                  "key": "name",
+                  "value": "{{userName}}"
+                },
+                {
+                  "key": "first",
+                  "value": "0"
+                },
+                {
+                  "key": "max",
+                  "value": "50"
+                }
               ]
             }
           }
@@ -458,9 +724,16 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/users/{{userId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "users", "{{userId}}"]
+              "raw": "{{baseUrl}}/api/ase-08/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "users",
+                "{{userId}}"
+              ]
             }
           }
         },
@@ -469,9 +742,17 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/users/{{userId}}/groups",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "users", "{{userId}}", "groups"]
+              "raw": "{{baseUrl}}/api/ase-08/users/{{userId}}/groups",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "users",
+                "{{userId}}",
+                "groups"
+              ]
             }
           }
         },
@@ -480,9 +761,17 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/api/users/{{userId}}/permissions",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "users", "{{userId}}", "permissions"]
+              "raw": "{{baseUrl}}/api/ase-08/users/{{userId}}/permissions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "users",
+                "{{userId}}",
+                "permissions"
+              ]
             }
           }
         }
@@ -497,8 +786,15 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/ase-08/actuator/health",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "ase-08", "actuator", "health"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "actuator",
+                "health"
+              ]
             }
           }
         },
@@ -508,8 +804,16 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/ase-08/actuator/health/liveness",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "ase-08", "actuator", "health", "liveness"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "actuator",
+                "health",
+                "liveness"
+              ]
             }
           }
         },
@@ -519,8 +823,16 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/api/ase-08/actuator/health/readiness",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "ase-08", "actuator", "health", "readiness"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "ase-08",
+                "actuator",
+                "health",
+                "readiness"
+              ]
             }
           }
         }
@@ -535,8 +847,14 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/v3/api-docs/ase-08",
-              "host": ["{{baseUrl}}"],
-              "path": ["v3", "api-docs", "ase-08"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "v3",
+                "api-docs",
+                "ase-08"
+              ]
             }
           }
         },
@@ -546,8 +864,13 @@
             "method": "GET",
             "url": {
               "raw": "{{baseUrl}}/ase-08/swagger-ui.html",
-              "host": ["{{baseUrl}}"],
-              "path": ["ase-08", "swagger-ui.html"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "ase-08",
+                "swagger-ui.html"
+              ]
             }
           }
         }

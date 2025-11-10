@@ -4,6 +4,7 @@ import com.ase.userservice.controllers.dto.PermissionDto;
 import com.ase.userservice.services.KeycloakRoleService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,5 +29,11 @@ public class PermissionController {
     @GetMapping("/search")
     public ResponseEntity<List<PermissionDto>> searchPermissions(@RequestParam String name) {
       return ResponseEntity.ok(roleService.searchPermissionsByName(name));
+    }
+
+    @GetMapping("/{permissionId}")
+    public ResponseEntity<PermissionDto> getPermissionById(
+        @PathVariable String permissionId) {
+      return ResponseEntity.ok(roleService.findPermissionById(permissionId));
     }
 }

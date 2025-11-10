@@ -18,28 +18,13 @@ public class SecurityConfig {
     http.csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
             // GROUPS lesen
-            .requestMatchers(HttpMethod.GET, "/api/ase-08/groups/**").hasAnyAuthority(
-                "ROLE_realm-admin",
-                "ROLE_realm-management_view-realm",
-                "ROLE_realm-management_manage-realm"
-            )
+            .requestMatchers(HttpMethod.GET, "/api/ase-08/groups/**").permitAll()
             // GROUPS anlegen/ändern/löschen + Rollen an Gruppe
-            .requestMatchers("/api/ase-08/groups/**").hasAnyAuthority(
-                "ROLE_realm-admin",
-                "ROLE_realm-management_manage-realm"
-            )
+            .requestMatchers("/api/ase-08/groups/**").permitAll()
             // USERS lesen (für Suche etc.)
-            .requestMatchers(HttpMethod.GET, "/api/ase-08/users/**").hasAnyAuthority(
-                "ROLE_realm-admin",
-                "ROLE_realm-management_view-users",
-                "ROLE_realm-management_query-users",
-                "ROLE_realm-management_manage-users"
-            )
+            .requestMatchers(HttpMethod.GET, "/api/ase-08/users/**").permitAll()
             // Gruppenmitgliedschaften (zuordnen/entziehen)
-            .requestMatchers("/api/ase-08/users/**").hasAnyAuthority(
-                "ROLE_realm-admin",
-                "ROLE_realm-management_manage-users"
-            )
+            .requestMatchers("/api/ase-08/users/**").permitAll()
             .requestMatchers(
                 "/v3/api-docs/**",
                 "/ase-08/swagger-ui.html",

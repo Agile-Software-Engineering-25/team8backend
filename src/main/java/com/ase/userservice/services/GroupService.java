@@ -15,7 +15,13 @@ import java.util.Map;
 @Service
 public class GroupService {
   private final RealmResource realm;
-  public GroupService(RealmResource realm) { this.realm = realm; }
+
+  public GroupService(RealmResource realm) {
+    this.realm = realm;
+  }
+  public RealmResource getRealm() {
+    return realm;
+  }
 
   public void create(GroupRequest req) {
     GroupRepresentation g = new GroupRepresentation();

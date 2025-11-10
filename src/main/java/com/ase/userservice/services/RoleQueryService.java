@@ -19,6 +19,10 @@ public class RoleQueryService {
     this.realm = realm;
   }
 
+  public RealmResource getRealm() {
+    return realm;
+  }
+
   /**
    * Rollen (realm-level) einer Gruppe
    */

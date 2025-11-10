@@ -17,19 +17,17 @@ import java.util.Locale;
 @Service
 public class KeycloakRoleService {
 
-    private final Keycloak keycloak;
-    private final String realm;
-
     // Hardcodierte Liste, wie im Frontend-Mock
     private static final List<String> STANDARD_ROLES = List.of("Administrator", "PR", "Student", "Dozent", "Redakteur");
 
-    public KeycloakRoleService(Keycloak keycloak, @Value("${keycloak.realm}") String realm) {
-        this.keycloak = keycloak;
-        this.realm = realm;
+    private final RealmResource realm;
+
+    public KeycloakRoleService(RealmResource realm) {
+      this.realm = realm;
     }
 
-    private RealmResource getRealm() {
-        return keycloak.realm(realm);
+    public RealmResource getRealm() {
+      return realm;
     }
 
     public List<RoleDto> findAllRoles() {
@@ -73,6 +71,11 @@ public class KeycloakRoleService {
           .filter(p -> p.name().toLowerCase(Locale.ROOT).contains(query))
           .toList();
     }
+
+  public PermissionDto findPermissionById(String permissionId) {
+    var role = getRealm().rolesById().getRole(permissionId);
+    return new PermissionDto(role.getId(), role.getName());
+  }
 
   public void createRole(CreateRoleRequest request) {
         RoleRepresentation newRole = new RoleRepresentation();
