@@ -48,7 +48,7 @@ public class GroupController {
     groupService.createGroup(request);
   }
 
-  @PostMapping("/groups/{parentGroupId}/children")
+  @PostMapping("/{parentGroupId}/children")
   @ResponseStatus(HttpStatus.CREATED)
   public GroupDto createChildGroup(@PathVariable String parentGroupId,
                                    @RequestBody CreateGroupRequest request) {

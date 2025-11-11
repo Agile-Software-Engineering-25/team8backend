@@ -10,6 +10,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
+
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     var jwtConv = new JwtAuthenticationConverter();
@@ -17,23 +18,20 @@ public class SecurityConfig {
 
     http.csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
-            // GROUPS lesen
-            .requestMatchers(HttpMethod.GET, "/api/ase-08/groups/**").permitAll()
-            // GROUPS anlegen/ändern/löschen + Rollen an Gruppe
-            .requestMatchers("/api/ase-08/groups/**").permitAll()
-            // USERS lesen (für Suche etc.)
-            .requestMatchers(HttpMethod.GET, "/api/ase-08/users/**").permitAll()
-            // Gruppenmitgliedschaften (zuordnen/entziehen)
-            .requestMatchers("/api/ase-08/users/**").permitAll()
+            // ALLE API-Endpunkte dieses Backends erlauben
+            .requestMatchers("/api/ase-08/**").permitAll()
+            // Swagger & Health
             .requestMatchers(
                 "/v3/api-docs/**",
                 "/ase-08/swagger-ui.html",
                 "/ase-08/swagger-ui/**",
                 "/api/ase-08/actuator/health/**"
             ).permitAll()
-            .anyRequest().authenticated())
-        .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConv)));
-
+            .anyRequest().authenticated()
+        )
+        .oauth2ResourceServer(oauth2 ->
+            oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConv))
+        );
     return http.build();
   }
 }
