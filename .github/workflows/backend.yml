@@ -1,11 +1,11 @@
-name: Build & Deploy Backend
+name: Build & Deploy Userservice
 
 on:
   push:
     branches: [ first-build ]
 
 jobs:
-  build-and-push:
+  build-and-publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -13,19 +13,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build & publish image to GHCR
+      - name: Build & (maybe) publish image
         uses: Agile-Software-Engineering-25/build-and-publish-image@v1
         with:
           image_name: team8-backend
+          # context: "."                   # optional, default "."
+          # file: "Dockerfile"             # optional, default "Dockerfile"
+          # name_suffix: ""                # z.B. "-backend"
+          # extra_tags: ""                 # z.B. "prod"
+          push: ${{ github.event_name != 'pull_request' }}
+          use_cache: "true"
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build-and-push
+    needs: build-and-publish
     steps:
       - uses: actions/checkout@v4
-      - name: Deploy to Kubernetes (Rancher cluster)
+
+      - name: Deploy to SAU Kubernetes
         uses: Agile-Software-Engineering-25/deploy-to-k8s@main
         with:
           kubeconfig: ${{ secrets.KUBECONFIG }}
           namespace:  ase-8
           image:      ghcr.io/agile-software-engineering-25/team8-backend
+          # tag:      latest
