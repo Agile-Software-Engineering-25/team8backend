@@ -1,0 +1,34 @@
+name: Build & Deploy Backend
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build & publish image to GHCR
+        id: image
+        uses: Agile-Software-Engineering-25/build-and-publish-image@v1
+        with:
+          image_name: team8-backend
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: docker
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to SAU Kubernetes
+        uses: Agile-Software-Engineering-25/deploy-to-k8s@main
+        with:
+          kubeconfig: ${{ secrets.KUBECONFIG }}
+          namespace:  ${{ vars.K8S_NAMESPACE }}
+          image:      ghcr.io/agile-software-engineering-25/team8-backend
+

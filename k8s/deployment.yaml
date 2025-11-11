@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: userservice
+  template:
+    metadata:
+      labels:
+        app: userservice
+    spec:
+      containers:
+        - name: userservice
+          image: backend
+          ports:
+            - containerPort: 8080
+          env:
+            - name: KEYCLOAK_SERVER_URL
+              value: "https://keycloak.sau-portal.de"
+            - name: KEYCLOAK_REALM
+              value: "sau"
