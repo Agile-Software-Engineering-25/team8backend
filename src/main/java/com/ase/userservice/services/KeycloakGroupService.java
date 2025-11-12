@@ -38,10 +38,24 @@ public class KeycloakGroupService {
   /* ===================== Groups ===================== */
 
   public List<GroupDto> findAllGroups() {
-    return getAllGroupsFlat().stream()
-        .filter(g -> !isStandardRootGroup(g))   // Standardgruppen ausblenden
-        .map(this::toGroupDto)
-        .sorted(Comparator.comparing(GroupDto::name))
+    List<GroupRepresentation> all = getAllGroupsFlat();
+
+    return all.stream()
+        .map(g -> {
+          long memberCount = realm.groups()
+              .group(g.getId())
+              .members()
+              .size();
+
+          String parentName = extractParentName(g);
+
+          return new GroupDto(
+              g.getId(),
+              g.getName(),
+              memberCount,
+              parentName
+          );
+        })
         .collect(Collectors.toList());
   }
 
@@ -87,7 +101,9 @@ public class KeycloakGroupService {
   public GroupDto createChildGroup(String parentGroupId, CreateGroupRequest request) {
     GroupRepresentation rep = new GroupRepresentation();
     rep.setName(request.name());
+
     if (request.attributes() != null) {
+      // Map<String, String> -> Map<String, List<String>>
       Map<String, List<String>> attrs = request.attributes().entrySet().stream()
           .collect(Collectors.toMap(
               Map.Entry::getKey,
@@ -96,18 +112,34 @@ public class KeycloakGroupService {
       rep.setAttributes(attrs);
     }
 
-    Response response = realm.groups()
-        .group(parentGroupId)
-        .subGroup(rep);   // Child unter Parent anlegen
+    RealmResource realm = getRealm();
+    GroupResource parent = realm.groups().group(parentGroupId);
 
-    String location = response.getHeaderString("Location");
+    // Kindgruppe in Keycloak anlegen
+    Response response = parent.subGroup(rep);
+    String location = response.getLocation().getPath();
     String childId = location.substring(location.lastIndexOf('/') + 1);
 
-    GroupRepresentation created = realm.groups()
-        .group(childId)
-        .toRepresentation();
+    GroupResource child = realm.groups().group(childId);
 
-    return toGroupDto(created);
+    // ======= Rollen vom Parent erben =======
+    List<RoleRepresentation> parentRoles =
+        parent.roles().realmLevel().listAll();
+    if (!parentRoles.isEmpty()) {
+      child.roles().realmLevel().add(parentRoles);
+    }
+    // =======================================
+
+    GroupRepresentation created = child.toRepresentation();
+    long memberCount = realm.groups().group(created.getId())
+        .members().size();
+
+    return new GroupDto(
+        created.getId(),
+        created.getName(),
+        memberCount,
+        parent.toRepresentation().getName()
+    );
   }
 
   public void updateGroup(String groupId, UpdateGroupRequest request) {
@@ -231,15 +263,31 @@ public class KeycloakGroupService {
   // alle Gruppen (inkl. Child-Gruppen) flach sammeln
   private List<GroupRepresentation> getAllGroupsFlat() {
     List<GroupRepresentation> result = new ArrayList<>();
-    Deque<GroupRepresentation> stack = new ArrayDeque<>(realm.groups().groups());
-    while (!stack.isEmpty()) {
-      GroupRepresentation g = stack.pop();
-      result.add(g);
-      if (g.getSubGroups() != null) {
-        stack.addAll(g.getSubGroups());
-      }
+
+    // Top-Level-Groups holen
+    List<GroupRepresentation> roots = realm.groups().groups();
+    for (GroupRepresentation root : roots) {
+      collectWithChildren(root, result);
     }
     return result;
+  }
+
+  private void collectWithChildren(GroupRepresentation current, List<GroupRepresentation> acc) {
+    acc.add(current);
+
+    // vollständige Repräsentation inkl. Subgroups laden
+    GroupRepresentation full = realm.groups()
+        .group(current.getId())
+        .toRepresentation();
+
+    List<GroupRepresentation> children = full.getSubGroups();
+    if (children == null) {
+      return;
+    }
+
+    for (GroupRepresentation child : children) {
+      collectWithChildren(child, acc);
+    }
   }
 
   private boolean isStandardRootGroup(GroupRepresentation g) {
@@ -267,47 +315,81 @@ public class KeycloakGroupService {
     return new GroupDto(g.getId(), g.getName(), memberCount, parentName);
   }
 
+  private void collectGroupDtos(RealmResource realm,
+                                GroupRepresentation group,
+                                String parentName,
+                                List<GroupDto> target) {
+
+    long memberCount = realm.groups()
+        .group(group.getId())
+        .members().size();
+
+    target.add(new GroupDto(group.getId(), group.getName(), memberCount, parentName));
+
+    if (group.getSubGroups() != null) {
+      for (GroupRepresentation child : group.getSubGroups()) {
+        collectGroupDtos(realm, child, group.getName(), target);
+      }
+    }
+  }
+
   private GroupDetailDto buildGroupDetail(GroupRepresentation self) {
+    // alle Gruppen flach – wird für die Ancestors benötigt
     List<GroupRepresentation> all = getAllGroupsFlat();
 
-    // direkte Permissions dieser Gruppe
-    List<String> permissionIds = realm.groups()
+    // ===== 1) direkte Permissions dieser Gruppe =====
+    List<PermissionDto> permissions = realm.groups()
         .group(self.getId())
-        .roles().realmLevel().listAll().stream()
-        .map(RoleRepresentation::getId)
+        .roles()
+        .realmLevel()
+        .listAll()
+        .stream()
+        .map(r -> new PermissionDto(r.getId(), r.getName()))
         .collect(Collectors.toList());
 
+    // ===== 2) Parent-Name aus dem Pfad bestimmen =====
     String parentName = extractParentName(self);
 
-    // Ancestors anhand des Pfades bestimmen
+    // ===== 3) Ancestors anhand des Pfades bestimmen =====
     List<GroupRefDto> ancestors = new ArrayList<>();
-    String path = self.getPath(); // /Student/BIN-T25/Gruppe3
+    String path = self.getPath();         // z.B. "/Student/BIN-T25/Gruppe3"
     if (path != null) {
       String[] segments = path.split("/");
       String currentPath = "";
+      // alle Segmente außer der letzten (das ist die aktuelle Gruppe)
       for (int i = 1; i < segments.length - 1; i++) {
         currentPath += "/" + segments[i];
         String p = currentPath;
+
         all.stream()
             .filter(g -> p.equals(g.getPath()))
             .findFirst()
-            .ifPresent(g -> ancestors.add(new GroupRefDto(g.getId(), g.getName())));
+            .ifPresent(g ->
+                ancestors.add(new GroupRefDto(g.getId(), g.getName()))
+            );
       }
     }
 
-    // direkte Children
+    // ===== 4) direkte Children =====
     List<GroupRefDto> children = new ArrayList<>();
-    if (self.getSubGroups() != null) {
-      for (GroupRepresentation sg : self.getSubGroups()) {
-        children.add(new GroupRefDto(sg.getId(), sg.getName()));
+
+    GroupRepresentation full = realm.groups()
+        .group(self.getId())
+        .toRepresentation();
+
+    List<GroupRepresentation> directChildren = full.getSubGroups();
+    if (directChildren != null) {
+      for (GroupRepresentation child : directChildren) {
+        children.add(new GroupRefDto(child.getId(), child.getName()));
       }
     }
 
+    // ===== 5) GroupDetailDto zusammenbauen =====
     return new GroupDetailDto(
         self.getId(),
         self.getName(),
         self.getAttributes(),
-        permissionIds,
+        permissions,   // jetzt List<PermissionDto>
         parentName,
         ancestors,
         children

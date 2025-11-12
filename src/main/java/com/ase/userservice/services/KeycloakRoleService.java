@@ -36,7 +36,7 @@ public class KeycloakRoleService {
                     long userCount = getRealm().roles().get(role.getName()).getRoleUserMembers().size();
                     // Logik für "standardRole" - hier vereinfacht
                     String standardRole = STANDARD_ROLES.contains(role.getName()) ? role.getName() : "";
-                    return new RoleDto(role.getId(), role.getName(), standardRole, userCount);
+                    return new RoleDto(role.getId(), role.getName(), userCount);
                 })
                 .collect(Collectors.toList());
     }
