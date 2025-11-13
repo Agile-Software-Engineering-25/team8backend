@@ -9,15 +9,21 @@ import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import jakarta.ws.rs.core.Response;
 import java.util.*;
-import java.util.Locale;
 import java.util.stream.Collectors;
+import java.util.Collections;
 
 @Service
 public class KeycloakGroupService {
 
+  /* ================== Konstruktors ================== */
   private static final Set<String> STANDARD_GROUP_NAMES = Set.of(
       "Lecturer",
       "SAU Admin",
@@ -25,37 +31,42 @@ public class KeycloakGroupService {
       "University administrative staff"
   );
 
-  private final RealmResource realm;
+  private final Keycloak keycloak;
+  private final String realmName;
+  private final GroupService groups;
+  private final RestTemplate adminRest;
+  private final String adminBase;
 
-  public KeycloakGroupService(RealmResource realm) {
-    this.realm = realm;
+  public KeycloakGroupService(Keycloak keycloak,
+                              @Value("${keycloak.realm}") String realmName,
+                              @Value("${keycloak.server-url}") String serverUrl,
+                              @Qualifier("keycloakAdminRestTemplate") RestTemplate adminRest,
+                              GroupService groups) {
+    this.keycloak   = keycloak;
+    this.realmName  = realmName;
+    this.adminRest  = adminRest;
+    this.groups     = groups;
+    this.adminBase  = serverUrl + "/admin/realms/" + realmName;
   }
 
   public RealmResource getRealm() {
-    return realm;
+    return keycloak.realm(realmName);
+  }
+
+  public RealmResource realm() {
+    return getRealm();
   }
 
   /* ===================== Groups ===================== */
 
+  // LIST ALL (inkl. Child-Groups)
   public List<GroupDto> findAllGroups() {
-    List<GroupRepresentation> all = getAllGroupsFlat();
-
-    return all.stream()
-        .map(g -> {
-          long memberCount = realm.groups()
-              .group(g.getId())
-              .members()
-              .size();
-
-          String parentName = extractParentName(g);
-
-          return new GroupDto(
-              g.getId(),
-              g.getName(),
-              memberCount,
-              parentName
-          );
-        })
+    return getAllGroupsFlat().stream()
+        .map(g -> new GroupDto(
+            g.getId(),
+            g.getName(),
+            memberCount(g.getId()),            // <== NEU
+            extractParentName(g)))
         .collect(Collectors.toList());
   }
 
@@ -67,9 +78,7 @@ public class KeycloakGroupService {
   }
 
   public GroupDetailDto findGroupById(String groupId) {
-    GroupRepresentation self = realm.groups()
-        .group(groupId)
-        .toRepresentation();
+    GroupRepresentation self = getRealm().groups().group(groupId).toRepresentation();
     return buildGroupDetail(self);
   }
 
@@ -262,38 +271,18 @@ public class KeycloakGroupService {
 
   // alle Gruppen (inkl. Child-Gruppen) flach sammeln
   private List<GroupRepresentation> getAllGroupsFlat() {
-    List<GroupRepresentation> result = new ArrayList<>();
-
-    // Top-Level-Groups holen
-    List<GroupRepresentation> roots = realm.groups().groups();
-    for (GroupRepresentation root : roots) {
-      collectWithChildren(root, result);
+    List<GroupRepresentation> all = new ArrayList<>();
+    for (GroupRepresentation top : realm().groups().groups()) {
+      collectRecursively(top, all);
     }
-    return result;
+    return all;
   }
 
-  private void collectWithChildren(GroupRepresentation current, List<GroupRepresentation> acc) {
-    acc.add(current);
-
-    // vollständige Repräsentation inkl. Subgroups laden
-    GroupRepresentation full = realm.groups()
-        .group(current.getId())
-        .toRepresentation();
-
-    List<GroupRepresentation> children = full.getSubGroups();
-    if (children == null) {
-      return;
+  private void collectRecursively(GroupRepresentation node, List<GroupRepresentation> out) {
+    out.add(node);
+    for (GroupRepresentation child : fetchChildren(node.getId())) {
+      collectRecursively(child, out);
     }
-
-    for (GroupRepresentation child : children) {
-      collectWithChildren(child, acc);
-    }
-  }
-
-  private boolean isStandardRootGroup(GroupRepresentation g) {
-    String path = g.getPath(); // z.B. /Student
-    int depth = path == null ? 0 : path.split("/").length; // ["", "Student"] => 2
-    return depth == 2 && STANDARD_GROUP_NAMES.contains(g.getName());
   }
 
   private String extractParentName(GroupRepresentation g) {
@@ -309,28 +298,21 @@ public class KeycloakGroupService {
   }
 
   private GroupDto toGroupDto(GroupRepresentation g) {
-    long memberCount = realm.groups().group(g.getId())
-        .members().size();
     String parentName = extractParentName(g);
-    return new GroupDto(g.getId(), g.getName(), memberCount, parentName);
+    return new GroupDto(g.getId(), g.getName(), memberCount(g.getId()), parentName);
   }
 
-  private void collectGroupDtos(RealmResource realm,
-                                GroupRepresentation group,
-                                String parentName,
-                                List<GroupDto> target) {
+  private List<GroupRepresentation> fetchChildren(String parentId) {
+    String url = adminBase + "/groups/" + parentId + "/children?max=1000";
+    ResponseEntity<List<GroupRepresentation>> resp =
+        adminRest.exchange(url, HttpMethod.GET, null,
+            new ParameterizedTypeReference<List<GroupRepresentation>>() {});
+    return resp.getBody() != null ? resp.getBody() : List.of();
+  }
 
-    long memberCount = realm.groups()
-        .group(group.getId())
-        .members().size();
-
-    target.add(new GroupDto(group.getId(), group.getName(), memberCount, parentName));
-
-    if (group.getSubGroups() != null) {
-      for (GroupRepresentation child : group.getSubGroups()) {
-        collectGroupDtos(realm, child, group.getName(), target);
-      }
-    }
+  private long memberCount(String groupId) {
+    // einfache Zählung über paginierte Members (Keycloak Admin Client)
+    return realm().groups().group(groupId).members(0, Integer.MAX_VALUE).size();
   }
 
   private GroupDetailDto buildGroupDetail(GroupRepresentation self) {
@@ -338,12 +320,8 @@ public class KeycloakGroupService {
     List<GroupRepresentation> all = getAllGroupsFlat();
 
     // ===== 1) direkte Permissions dieser Gruppe =====
-    List<PermissionDto> permissions = realm.groups()
-        .group(self.getId())
-        .roles()
-        .realmLevel()
-        .listAll()
-        .stream()
+    List<PermissionDto> permissions = getRealm().groups()
+        .group(self.getId()).roles().realmLevel().listAll().stream()
         .map(r -> new PermissionDto(r.getId(), r.getName()))
         .collect(Collectors.toList());
 
@@ -371,18 +349,11 @@ public class KeycloakGroupService {
     }
 
     // ===== 4) direkte Children =====
-    List<GroupRefDto> children = new ArrayList<>();
+    List<GroupRepresentation> childrenReps = fetchChildren(self.getId());
 
-    GroupRepresentation full = realm.groups()
-        .group(self.getId())
-        .toRepresentation();
-
-    List<GroupRepresentation> directChildren = full.getSubGroups();
-    if (directChildren != null) {
-      for (GroupRepresentation child : directChildren) {
-        children.add(new GroupRefDto(child.getId(), child.getName()));
-      }
-    }
+    List<GroupRefDto> childDtos = childrenReps.stream()
+        .map(c -> new GroupRefDto(c.getId(), c.getName()))
+        .toList();
 
     // ===== 5) GroupDetailDto zusammenbauen =====
     return new GroupDetailDto(
@@ -392,7 +363,7 @@ public class KeycloakGroupService {
         permissions,   // jetzt List<PermissionDto>
         parentName,
         ancestors,
-        children
+        childDtos
     );
   }
 }

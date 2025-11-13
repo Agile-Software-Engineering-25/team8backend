@@ -4,11 +4,16 @@ import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.RealmResource;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import java.time.Duration;
+import java.util.List;
 
 @Configuration
 public class KeycloakAdminConfig {
@@ -27,6 +32,22 @@ public class KeycloakAdminConfig {
 
   @Value("${cors.allowed-origins}")
   private String allowedOrigins;
+
+  @SuppressWarnings("removal")
+  @Bean
+  @Qualifier("keycloakAdminRestTemplate")
+  public RestTemplate keycloakAdminRestTemplate(Keycloak keycloak,
+                                                RestTemplateBuilder builder) {
+    return builder
+        .setConnectTimeout(Duration.ofSeconds(5))
+        .setReadTimeout(Duration.ofSeconds(10))
+        .additionalInterceptors((request, body, execution) -> {
+          String token = keycloak.tokenManager().getAccessTokenString();
+          request.getHeaders().setBearerAuth(token);
+          return execution.execute(request, body);
+        })
+        .build();
+  }
 
   // 1) Keycloak-Admin-Client: holt/refresh’t den Access Token automatisch
   @Bean
