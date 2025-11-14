@@ -52,13 +52,11 @@ jobs:
           kubectl -n ${{ env.NAMESPACE }} set image deploy/${{ env.APP_NAME }} \
             ${{ env.CONTAINER_NAME }}=${{ env.IMAGE }}:${{ env.TAG }} --record
 
-      # Traefik Middleware + Ingress aus dem Repo anwenden
-      # (wenn du sie stattdessen via kustomization.yaml referenzierst,
-      #  kannst du hier einfach 'kubectl apply -k k8s/' verwenden)
-      - name: Apply Traefik Middleware & Ingress (no client-side validation)
+      - name: Apply K8s Manifests
         run: |
-          kubectl -n ${{ env.NAMESPACE }} apply --validate=false -f ${{ env.K8S_DIR }}/middleware-strip-masterdata.yaml
-          kubectl -n ${{ env.NAMESPACE }} apply --server-side -f ${{ env.K8S_DIR }}/ingress-userservice.yaml
+          kubectl -n ase-8 apply -f k8s/deployment.yaml
+          kubectl -n ase-8 apply -f k8s/service.yaml
+          kubectl -n ase-8 apply -f k8s/ingress.yaml
 
       # Rollout abwarten
       - name: Wait for rollout

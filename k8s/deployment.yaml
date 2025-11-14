@@ -22,3 +22,5 @@ spec:
               value: "https://keycloak.sau-portal.de"
             - name: KEYCLOAK_REALM
               value: "sau"
+            - name: ASE_BASE_PATH
+              value: /masterdata
