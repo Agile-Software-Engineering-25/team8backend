@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: userservice
-          image: backend
+          image: ghcr.io/agile-software-engineering-25/team8-backend
           ports:
             - containerPort: 8080
           env:
