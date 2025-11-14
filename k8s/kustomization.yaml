@@ -3,6 +3,8 @@ kind: Kustomization
 resources:
   - deployment.yaml
   - service.yaml
+  - middleware-strip-masterdata.yaml
+  - ingress-userservice.yaml
 
 images:
   - name: backend

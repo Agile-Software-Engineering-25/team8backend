@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: userservice
+  namespace: ase-8
+  annotations:
+    # Traefik einschalten + TLS
+    traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    # Prefix /masterdata entfernen:
+    traefik.ingress.kubernetes.io/router.middlewares: ase-8-strip-masterdata@kubernetescrd
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: sau-portal.de
+      http:
+        paths:
+          - path: /masterdata/api/ase-08
+            pathType: Prefix
+            backend:
+              service:
+                name: userservice
+                port:
+                  number: 8080
+  tls:
+    - hosts:
+        - sau-portal.de
+      # secretName: portal-cert          # nur falls ihr ein manuelles TLS-Secret nutzt
