@@ -8,7 +8,7 @@ import org.keycloak.admin.client.resource.RolesResource;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
+import jakarta.ws.rs.NotFoundException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -103,4 +103,26 @@ public class KeycloakRoleService {
     public List<String> getStandardRoles() {
         return STANDARD_ROLES;
     }
+
+  // ======  User <-> Permission (Realm-Rolle) ======
+  public void addPermissionToUser(String userId, String permissionId) {
+    RoleRepresentation role = getRealm().rolesById().getRole(permissionId);
+    if (role == null) throw new NotFoundException("Permission not found: " + permissionId);
+    getRealm()
+        .users()
+        .get(userId)
+        .roles()
+        .realmLevel()
+        .add(Collections.singletonList(role));
+  }
+  public void removePermissionFromUser(String userId, String permissionId) {
+    RoleRepresentation role = getRealm().rolesById().getRole(permissionId);
+    if (role == null) throw new NotFoundException("Permission not found: " + permissionId);
+    getRealm()
+        .users()
+        .get(userId)
+        .roles()
+        .realmLevel()
+        .remove(Collections.singletonList(role));
+  }
 }

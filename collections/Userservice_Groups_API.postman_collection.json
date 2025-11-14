@@ -803,6 +803,96 @@
               ]
             }
           }
+        },
+        {
+          "name": "Grant Permission to User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ase-08/users/{{userId}}/permissions/{{permissionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ase-08", "users", "{{userId}}", "permissions", "{{permissionId}}"]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "{{accessToken}}", "type": "string" }
+              ]
+            },
+            "description": "Ordnet dem User (userId) die Permission/Rolle (permissionId) auf Realm-Ebene zu. Erwartet 204 No Content."
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "originalRequest": {
+                "method": "POST",
+                "url": "{{baseUrl}}/api/ase-08/users/{{userId}}/permissions/{{permissionId}}"
+              },
+              "status": "No Content",
+              "code": 204
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status ist 204', function () {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Revoke Permission from User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/ase-08/users/{{userId}}/permissions/{{permissionId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "ase-08", "users", "{{userId}}", "permissions", "{{permissionId}}"]
+            },
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                { "key": "token", "value": "{{accessToken}}", "type": "string" }
+              ]
+            },
+            "description": "Entfernt die Permission/Rolle (permissionId) vom User (userId) auf Realm-Ebene. Erwartet 204 No Content."
+          },
+          "response": [
+            {
+              "name": "204 No Content",
+              "originalRequest": {
+                "method": "DELETE",
+                "url": "{{baseUrl}}/api/ase-08/users/{{userId}}/permissions/{{permissionId}}"
+              },
+              "status": "No Content",
+              "code": 204
+            }
+          ],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status ist 204', function () {",
+                  "  pm.response.to.have.status(204);",
+                  "});"
+                ]
+              }
+            }
+          ]
         }
       ]
     },

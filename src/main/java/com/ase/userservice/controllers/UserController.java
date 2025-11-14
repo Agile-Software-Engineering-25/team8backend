@@ -7,6 +7,8 @@ import org.keycloak.representations.idm.GroupRepresentation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.http.HttpStatus;
+import com.ase.userservice.services.KeycloakRoleService;
 
 import java.util.List;
 
@@ -15,9 +17,11 @@ import java.util.List;
 public class UserController {
 
   private final KeycloakGroupService groupService;
+  private final KeycloakRoleService roleService;
 
-  public UserController(KeycloakGroupService groupService) {
+  public UserController(KeycloakGroupService groupService, KeycloakRoleService roleService) {
     this.groupService = groupService;
+    this.roleService = roleService;
   }
 
   /* Suche */
@@ -57,5 +61,21 @@ public class UserController {
   @GetMapping("/{userId}/permissions")
   public ResponseEntity<List<PermissionDto>> getUserPermissions(@PathVariable String userId) {
     return ResponseEntity.ok(groupService.getUserEffectivePermissions(userId));
+  }
+
+  // ====== Permission einem User zuordnen ======
+  @PostMapping("/{userId}/permissions/{permissionId}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void grantPermissionToUser(@PathVariable String userId,
+                                    @PathVariable String permissionId) {
+    roleService.addPermissionToUser(userId, permissionId);
+  }
+
+  // ====== Permission von User entfernen ======
+  @DeleteMapping("/{userId}/permissions/{permissionId}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void revokePermissionFromUser(@PathVariable String userId,
+                                       @PathVariable String permissionId) {
+    roleService.removePermissionFromUser(userId, permissionId);
   }
 }
