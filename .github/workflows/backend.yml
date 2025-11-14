@@ -55,10 +55,10 @@ jobs:
       # Traefik Middleware + Ingress aus dem Repo anwenden
       # (wenn du sie stattdessen via kustomization.yaml referenzierst,
       #  kannst du hier einfach 'kubectl apply -k k8s/' verwenden)
-      - name: Apply Traefik Middleware & Ingress
+      - name: Apply Traefik Middleware & Ingress (no client-side validation)
         run: |
-          kubectl -n ${{ env.NAMESPACE }} apply -f ${{ env.K8S_DIR }}/middleware-strip-masterdata.yaml
-          kubectl -n ${{ env.NAMESPACE }} apply -f ${{ env.K8S_DIR }}/ingress-userservice.yaml
+          kubectl -n ${{ env.NAMESPACE }} apply --validate=false -f ${{ env.K8S_DIR }}/middleware-strip-masterdata.yaml
+          kubectl -n ${{ env.NAMESPACE }} apply --server-side -f ${{ env.K8S_DIR }}/ingress-userservice.yaml
 
       # Rollout abwarten
       - name: Wait for rollout
